@@ -1,5 +1,6 @@
 from anticaptchaofficial.imagecaptcha import imagecaptcha
 from anticaptcha_secret_key import API_KEY
+import requests
 
 
 class Account:
@@ -43,6 +44,25 @@ class AntiCaptcha:
             return captcha_text
         else:
             return f"task finished with error {self.solver.error_code}"
+
+
+class CaptchaLoader:
+    """предназначен для скачивания картинки с капчей из интернета"""
+    pass
+
+    @classmethod
+    def load(cls, url):
+        """
+        скачивает картинку с капчей и сохраняет в файл
+        captcha.jpg в корневую директорию проекта
+        :param url: - url, по которому необходимо сделать запрос картинки(тип -str)
+        :return: None
+        """
+        responce = requests.get(url)
+        img_bytes = responce.content
+        file_name = 'captcha.jpg'
+        with open(file_name, 'wb') as file:
+            file.write(img_bytes)
 
 
 if __name__ == '__main__':
