@@ -75,14 +75,12 @@ captcha_inp_field.send_keys(captcha_text)
 
 continue_btn = driver.find_element(by=By.XPATH, value='/html/body/div[1]/div[3]/div[3]/div[3]/div/div/div/form/button[1]')
 continue_btn.click()
-
-new_account_info = vars(new_account)
-core.CsvWriter.write('created_accounts.csv', new_account_info)
-
 time.sleep(20)
 
 cancel_btn = driver.find_element(by=By.XPATH, value='/html/body/div[16]/div[2]/div/div/div[2]/form/button[2]')
 cancel_btn.click()
+new_account_info = vars(new_account)
+core.CsvWriter.write('created_accounts.csv', new_account_info)
 time.sleep(5)
 
 write_letter_btn = driver.find_element(by=By.XPATH, value='//*[@id="app-canvas"]/div/div[1]/div[1]/div/div[2]/span/div[1]/div[1]/div/div/div/div[1]/div/div/a/span/span')
