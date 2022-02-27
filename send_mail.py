@@ -5,7 +5,6 @@ from mimesis import Person
 from mimesis.locales import Locale
 from mimesis.enums import Gender
 from selenium import webdriver
-from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
@@ -54,14 +53,14 @@ s = Service('chromedriver.exe')
 driver = webdriver.Chrome(service=s)
 
 driver.get('https://mail.ru/')
-
+time.sleep(2)
 register_btn = driver.find_element(by=By.XPATH, value='/html/body/main/div[2]/div[1]/div[1]/div[2]/div[2]/a')
 register_btn.click()
 
 tabs = driver.window_handles
 driver.switch_to.window(tabs[1])
 driver.set_window_size(600, 700)
-
+time.sleep(2)
 name_field = driver.find_element(by=By.XPATH, value='//*[@id="fname"]')
 surname_field = driver.find_element(by=By.XPATH, value='//*[@id="lname"]')
 birth_day_selector = driver.find_element(by=By.XPATH, value="/html/body/div[1]/div[3]/div[3]/div[4]/div/div/div/div/form/div[5]/div[2]/div/div[1]/div/div/select")
@@ -84,9 +83,34 @@ time.sleep(2)
 repeat_password_field = driver.find_element(by=By.XPATH, value='//*[@id="repeatPassword"]')
 repeat_password_field.send_keys(rand_password)
 create_btn.click()
+time.sleep(10)
+
+img = driver.find_element(by=By.XPATH, value='/html/body/div[1]/div[3]/div[3]/div[3]/div/div/div/form/div[5]/img')
+img_link = img.get_attribute('src')
+
+driver.switch_to.window(driver.window_handles[1])
+driver.execute_script("window.open()")
+driver.switch_to.window(driver.window_handles[-1])
+
+driver.get(str(img_link)+'.png')
+
+with open('captcha.png', 'wb') as file:
+    file.write(driver.find_element(by=By.TAG_NAME, value='img').screenshot_as_png)
+driver.close()
+driver.switch_to.window(driver.window_handles[1])
+
+cancel_btn = driver.find_element(by=By.XPATH, value='/html/body/div[16]/div[2]/div/div/div[2]/form/button[2]')
+cancel_btn.click()
 
 
-time.sleep(30)
+# core.CaptchaLoader().load(img_link, 'captcha.jpg')
+
+# solver = core.AntiCaptcha('captcha.jpg')
+# captcha_text = solver.return_text()
+# print(captcha_text)
+# print(new_account_info)
+
+time.sleep(300)
 driver.quit()
 
 
