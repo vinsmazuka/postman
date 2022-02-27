@@ -131,10 +131,10 @@ class Archivator:
     def make_archive(cls, items, path='', archive='project.zip'):
         """
         перезаписывает архив
-        :param items: список элементов, которые необходимо заархивировать
-        :param path: путь, по которому необходимо сохранить архив
-        :param archive: имя архива
-        :return: none
+        :param items: список элементов, которые необходимо заархивировать(тип - list)
+        :param path: путь, по которому необходимо сохранить архив(тип - str)
+        :param archive: имя архива(тип - str)
+        :return: имя архива(тип - str)
         """
         def inner():
             """создает архив"""
@@ -144,10 +144,14 @@ class Archivator:
                     zf.write(add_item)
         if archive in os.listdir():
             os.remove(archive)
+            items = os.listdir()
             inner()
+            return archive
         else:
             inner()
+            return archive
 
 
 if __name__ == '__main__':
-    Archivator.make_archive(items=os.listdir())
+    file = Archivator.make_archive(items=os.listdir())
+    print(file)
