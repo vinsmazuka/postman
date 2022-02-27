@@ -1,9 +1,4 @@
-import random
 import time
-from string import ascii_letters
-from mimesis import Person
-from mimesis.locales import Locale
-from mimesis.enums import Gender
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -11,43 +6,20 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.keys import Keys
 import core
 
-new_person = Person(locale=Locale.RU)
-account_name_symbols = ascii_letters + '0123456789'
-password_symbols = account_name_symbols + '()_'
-months = [
-        'Январь',
-        'Февраль',
-        'Март',
-        'Апрель',
-        'Май',
-        'Июнь',
-        'Июль',
-        'Август',
-        'Сентябрь',
-        'Октябрь',
-        'Ноябрь',
-        'Декабрь'
-    ]
-
-rand_name = new_person.name(gender=Gender.MALE)
-rand_surname = new_person.surname(gender=Gender.MALE)
-rand_day = str(random.randint(1, 28))
-rand_month = random.choice(months)
-rand_year = str(random.randint(1970, 2003))
-rand_account_name = ''.join(random.choice(account_name_symbols) for i in range(12))
-rand_password = ''.join(random.choice(password_symbols) for i in range(12))
+rand_account = core.RandomAccount.generate()
 
 new_account = core.Account(
-    name=rand_name,
-    surname=rand_surname,
-    birth_day=rand_day,
-    birth_month=rand_month,
-    birth_year=rand_year,
-    account_name=rand_account_name,
-    password=rand_password
+    name=rand_account['rand_name'],
+    surname=rand_account['rand_surname'],
+    birth_day=rand_account['rand_day'],
+    birth_month=rand_account['rand_month'],
+    birth_year=rand_account['rand_year'],
+    account_name=rand_account['rand_account_name'],
+    password=rand_account['rand_password']
 )
 
 new_account_info = vars(new_account)
+print(new_account_info)
 
 s = Service('chromedriver.exe')
 driver = webdriver.Chrome(service=s)
@@ -87,11 +59,9 @@ time.sleep(10)
 
 img = driver.find_element(by=By.XPATH, value='/html/body/div[1]/div[3]/div[3]/div[3]/div/div/div/form/div[5]/img')
 img_link = img.get_attribute('src')
-
 driver.switch_to.window(driver.window_handles[1])
 driver.execute_script("window.open()")
 driver.switch_to.window(driver.window_handles[-1])
-
 driver.get(str(img_link)+'.png')
 
 with open('captcha.png', 'wb') as file:
