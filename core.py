@@ -1,5 +1,7 @@
 import csv
+import os
 import random
+import zipfile
 from string import ascii_letters
 from anticaptchaofficial.imagecaptcha import imagecaptcha
 from anticaptcha_secret_key import API_KEY
@@ -121,6 +123,31 @@ class CsvWriter:
             return message
 
 
+class Archivator:
+    """используется для создания архивов"""
+    archivator = zipfile.ZipFile
+
+    @classmethod
+    def make_archive(cls, items, path='', archive='project.zip'):
+        """
+        перезаписывает архив
+        :param items: список элементов, которые необходимо заархивировать
+        :param path: путь, по которому необходимо сохранить архив
+        :param archive: имя архива
+        :return: none
+        """
+        def inner():
+            """создает архив"""
+            with cls.archivator(archive, mode='w') as zf:
+                for item in items:
+                    add_item = os.path.join(path, item)
+                    zf.write(add_item)
+        if archive in os.listdir():
+            os.remove(archive)
+            inner()
+        else:
+            inner()
+
+
 if __name__ == '__main__':
-    rand_account = RandomAccount.generate()
-    print(rand_account)
+    Archivator.make_archive(items=os.listdir())
