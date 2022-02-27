@@ -1,3 +1,4 @@
+import csv
 import random
 from string import ascii_letters
 from anticaptchaofficial.imagecaptcha import imagecaptcha
@@ -72,7 +73,7 @@ class RandomAccount:
 
     @classmethod
     def generate(cls):
-        """генерирует случайны аккаунт и возвращает словарь с данными о нем"""
+        """генерирует случайный аккаунт и возвращает словарь с данными о нем"""
         rand_name = cls.new_person.name(gender=Gender.MALE)
         rand_surname = cls.new_person.surname(gender=Gender.MALE)
         rand_day = str(random.randint(1, 28))
@@ -90,6 +91,34 @@ class RandomAccount:
             'rand_password': rand_password
         }
         return result
+
+
+class CsvWriter:
+    """
+    Предназначен для записи данных в CSV файл
+    """
+    pass
+
+    @staticmethod
+    def write(path, new_account):
+        """
+        Записывает данные о созданном аккаунте в указанный файл CSV
+        :param path: путь к файлу, в кот необходимо произвести запись
+        :param new_account: словарь, содержащий информацию о об аккаунте
+        :return возвращает сообщение об ошибке, если возникла ошибка
+        """
+        headers = list(new_account.keys())
+        try:
+            with open(path, "a", newline="") as csv_file:
+                writer = csv.DictWriter(csv_file, delimiter=';', fieldnames=headers)
+                writer.writerow(new_account)
+        except PermissionError:
+            message = (f'запись в файл не была осуществлена, т.к. файл {path} был открыт,'
+                       ' закроте файл и повторите попытку')
+            return message
+        else:
+            message = f'была осуществлена запись в файл {path}'
+            return message
 
 
 if __name__ == '__main__':
