@@ -18,9 +18,6 @@ new_account = core.Account(
     password=rand_account['rand_password']
 )
 
-new_account_info = vars(new_account)
-print(new_account_info)
-
 s = Service('chromedriver.exe')
 driver = webdriver.Chrome(service=s)
 
@@ -43,17 +40,18 @@ account_name_field = driver.find_element(by=By.XPATH, value='//*[@id="aaa__input
 password_field = driver.find_element(by=By.XPATH, value='//*[@id="password"]')
 create_btn = driver.find_element(by=By.XPATH, value='/html/body/div[1]/div[3]/div[3]/div[4]/div/div/div/div/form/button')
 
-name_field.send_keys(rand_name)
-surname_field.send_keys(rand_surname)
-Select(birth_day_selector).select_by_visible_text(rand_day)
-Select(birth_month_selector).select_by_visible_text(rand_month)
-Select(birth_year_selector).select_by_visible_text(rand_year)
+name_field.send_keys(new_account.name)
+surname_field.send_keys(new_account.surname)
+Select(birth_day_selector).select_by_visible_text(new_account.birth_day)
+Select(birth_month_selector).select_by_visible_text(new_account.birth_month)
+Select(birth_year_selector).select_by_visible_text(new_account.birth_year)
 gender_selector.click()
-account_name_field.send_keys(rand_account_name)
-password_field.send_keys(rand_password)
+account_name_field.send_keys(new_account.account_name)
+password_field.send_keys(new_account.password)
 time.sleep(2)
 repeat_password_field = driver.find_element(by=By.XPATH, value='//*[@id="repeatPassword"]')
-repeat_password_field.send_keys(rand_password)
+repeat_password_field.send_keys(new_account.password)
+
 create_btn.click()
 time.sleep(10)
 
@@ -78,12 +76,13 @@ captcha_inp_field.send_keys(captcha_text)
 continue_btn = driver.find_element(by=By.XPATH, value='/html/body/div[1]/div[3]/div[3]/div[3]/div/div/div/form/button[1]')
 continue_btn.click()
 
+new_account_info = vars(new_account)
+core.CsvWriter.write('created_accounts.csv', new_account_info)
+
 time.sleep(20)
 
 cancel_btn = driver.find_element(by=By.XPATH, value='/html/body/div[16]/div[2]/div/div/div[2]/form/button[2]')
 cancel_btn.click()
-
-print(new_account_info)
 
 time.sleep(300)
 driver.quit()
