@@ -1,6 +1,10 @@
+import random
+from string import ascii_letters
 from anticaptchaofficial.imagecaptcha import imagecaptcha
 from anticaptcha_secret_key import API_KEY
-import requests
+from mimesis import Person
+from mimesis.locales import Locale
+from mimesis.enums import Gender
 
 
 class Account:
@@ -46,25 +50,48 @@ class AntiCaptcha:
             return f"task finished with error {self.solver.error_code}"
 
 
-class CaptchaLoader:
-    """предназначен для скачивания картинки с капчей из интернета"""
-    pass
+class RandomAccount:
+    """Представляет случайный аккаунт"""
+    new_person = Person(locale=Locale.RU)
+    account_name_symbols = ascii_letters + '0123456789'
+    password_symbols = account_name_symbols + '()_'
+    months = [
+        'Январь',
+        'Февраль',
+        'Март',
+        'Апрель',
+        'Май',
+        'Июнь',
+        'Июль',
+        'Август',
+        'Сентябрь',
+        'Октябрь',
+        'Ноябрь',
+        'Декабрь'
+    ]
 
     @classmethod
-    def load(cls, url):
-        """
-        скачивает картинку с капчей и сохраняет в файл
-        captcha.jpg в корневую директорию проекта
-        :param url: - url, по которому необходимо сделать запрос картинки(тип -str)
-        :return: None
-        """
-        responce = requests.get(url)
-        img_bytes = responce.content
-        file_name = 'captcha.jpg'
-        with open(file_name, 'wb') as file:
-            file.write(img_bytes)
+    def generate(cls):
+        """генерирует случайны аккаунт и возвращает словарь с данными о нем"""
+        rand_name = cls.new_person.name(gender=Gender.MALE)
+        rand_surname = cls.new_person.surname(gender=Gender.MALE)
+        rand_day = str(random.randint(1, 28))
+        rand_month = random.choice(cls.months)
+        rand_year = str(random.randint(1970, 2003))
+        rand_account_name = ''.join(random.choice(cls.account_name_symbols) for i in range(12))
+        rand_password = ''.join(random.choice(cls.password_symbols) for i in range(12))
+        result = {
+            'rand_name': rand_name,
+            'rand_surname': rand_surname,
+            'rand_day': rand_day,
+            'rand_month': rand_month,
+            'rand_year': rand_year,
+            'rand_account_name': rand_account_name,
+            'rand_password': rand_password
+        }
+        return result
 
 
 if __name__ == '__main__':
-    text = AntiCaptcha(path='captcha.jpg').return_text()
-    print(text)
+    rand_account = RandomAccount.generate()
+    print(rand_account)
