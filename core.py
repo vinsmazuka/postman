@@ -151,7 +151,3 @@ class Archivator:
             inner()
             return archive
 
-
-if __name__ == '__main__':
-    file = Archivator.make_archive(items=os.listdir())
-    print(file)
