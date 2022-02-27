@@ -99,18 +99,20 @@ with open('captcha.png', 'wb') as file:
 driver.close()
 driver.switch_to.window(driver.window_handles[1])
 
+solver = core.AntiCaptcha('captcha.png')
+captcha_text = solver.return_text()
+
+captcha_inp_field = driver.find_element(by=By.XPATH, value='/html/body/div[1]/div[3]/div[3]/div[3]/div/div/div/form/div[5]/div/div[1]/div/div/div/div/input')
+captcha_inp_field.send_keys(captcha_text)
+time.sleep(300)
+
 cancel_btn = driver.find_element(by=By.XPATH, value='/html/body/div[16]/div[2]/div/div/div[2]/form/button[2]')
 cancel_btn.click()
 
-
-# core.CaptchaLoader().load(img_link, 'captcha.jpg')
-
-# solver = core.AntiCaptcha('captcha.jpg')
-# captcha_text = solver.return_text()
-# print(captcha_text)
-# print(new_account_info)
+print(new_account_info)
 
 time.sleep(300)
 driver.quit()
+
 
 
