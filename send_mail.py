@@ -93,7 +93,7 @@ subject_field = driver.find_element(by=By.XPATH, value='/html/body/div[1]/div/di
 subject_field.send_keys('Тестовое задание Ивлев А.В.')
 
 message_field = driver.find_element(by=By.XPATH, value='/html/body/div[1]/div/div[2]/div/div[1]/div[2]/div[3]/div[5]/div/div/div[2]/div[1]')
-message_field.send_keys('Это те самые дроиды, которых вы ищите!\nИвлев Артем Владимирович, 89244019993')
+message_field.send_keys('Это те самые дроиды, которых вы ищите!')
 
 input_file_field = driver.find_element(by=By.XPATH, value='/html/body/div[1]/div/div[2]/div/div[1]/div[2]/div[3]/div[4]/div/div/div/button[1]/input')
 file = core.Archivator.make_archive(items=os.listdir())
